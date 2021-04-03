@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -93,7 +94,7 @@ public class ContactsManagerActivity extends AppCompatActivity {
                 contactData.add(imRow);
             }
             intent.putParcelableArrayListExtra(ContactsContract.Intents.Insert.DATA, contactData);
-            startActivity(intent);
+            startActivityForResult(intent, Constants.CONTACTS_MANAGER_REQUEST_CODE);
         }
     }
     SaveButtonListener saveButtonListener = new SaveButtonListener();
@@ -128,6 +129,25 @@ public class ContactsManagerActivity extends AppCompatActivity {
         websiteEditText = (EditText)findViewById(R.id.website_edit_text);
         imEditText = (EditText)findViewById(R.id.im_edit_text);
 
+        Intent intent = getIntent();
+        if (intent != null) {
+            String phone = intent.getStringExtra("ro.pub.cs.systems.eim.lab04.contactsmanager.PHONE_NUMBER_KEY");
+            if (phone != null) {
+                phoneEditText.setText(phone);
+            } else {
+                Toast.makeText(this, "PHONE ERROR", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        switch(requestCode) {
+            case Constants.CONTACTS_MANAGER_REQUEST_CODE:
+                setResult(resultCode, new Intent());
+                finish();
+                break;
+        }
     }
 }
